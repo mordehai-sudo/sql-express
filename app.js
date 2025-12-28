@@ -3,11 +3,13 @@ import './db/db.js'; // חובה לציין סיומת .js ב-ES Modules
 import 'dotenv/config';
 import cors from "cors"
 import { UsersModel } from './models/users.js';
+import { connectDB } from './db/db.js';
 const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 3003;
 
+connectDB()
 // נתיב לדוגמה: קבלת כל המשתמשים
 app.get('/users', async (req, res) => {
   try {
