@@ -1,16 +1,9 @@
-import mysql from "mysql2/promise";
-import 'dotenv/config';
+import mongoose from "mongoose";
+
+const mongoDBURL = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/mydb';
+
+mongoose.connect(mongoDBURL).then(() => console.log("Connection Successful"))
+    .catch((err) => console.error("Connection Error:", err));
 
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 5,
-    queueLimit: 0
-});
 
-
-export default pool;

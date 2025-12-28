@@ -1,7 +1,8 @@
 import express from 'express';
-import db from './db/db.js'; // חובה לציין סיומת .js ב-ES Modules
+import './db/db.js'; // חובה לציין סיומת .js ב-ES Modules
 import 'dotenv/config';
-
+import cors from "cors"
+import { UsersModel } from './models/users.js';
 const app = express();
 app.use(express.json());
 
@@ -10,8 +11,8 @@ const PORT = process.env.PORT || 3003;
 // נתיב לדוגמה: קבלת כל המשתמשים
 app.get('/users', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM users');
-    res.json(rows);
+    const users = await UsersModel.find().exec();
+    res.json(users);
   } catch (err) {
     res.status(500).json({ error: 'Database error', details: err.message });
   }
@@ -19,13 +20,12 @@ app.get('/users', async (req, res) => {
 
 // נתיב לדוגמה: יצירת משתמש חדש
 app.post('/users', async (req, res) => {
-  const { name } = req.body;
+  const { name, email } = req.body;
   try {
-    const [result] = await db.query(
-      'INSERT INTO users (name) VALUES (?)',
-      name
-    );
-    res.status(201).json({ id: result.insertId, name });
+    const user = new UsersModel({ name, email })
+    await user.save();
+
+    res.status(201).json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
